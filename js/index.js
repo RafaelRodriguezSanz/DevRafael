@@ -1,51 +1,79 @@
-// Canvas setup
-const threejsCanvas = document.querySelector('#threejs-canvas')
-let width = threejsCanvas.offsetWidth
-let height = threejsCanvas.offsetHeight
 
-//scene and camera setup
-const scene = new THREE.Scene()
-const camera = new THREE.PerspectiveCamera(70, width / height, 1, 1000)
-camera.position.set(10, 10, 10)
-camera.lookAt(0, 0, 0)
+//#region scene
 
-//renderer setup
-const renderer = new THREE.WebGLRenderer({
-    antialias: true,
-    alpha: true,
-})
-renderer.setSize(width, height)
-renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
-threejsCanvas.appendChild(renderer.domElement)
+var scene = new THREE.Scene();
 
-//let's add a 3D box
-const geometry = new THREE.BoxGeometry(5, 5, 5)
-const material = new THREE.MeshBasicMaterial({ color: 0x00ffff })
-const box = new THREE.Mesh(geometry, material)
-scene.add(box)
+//#endregion 
 
-//update
-update()
+//#region camera
+var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
+
+camera.position.x = 142.75045088038718;
+camera.position.y = 131.92094293881487;
+camera.position.z = 209.76686235092527;
+
+//#endregion
+
+//#region Canvas
+var renderer = new THREE.WebGLRenderer();
+renderer.setSize( window.innerWidth, window.innerHeight );
+document.body.appendChild( renderer.domElement );
+//#endregion
+
+//#region Controls
+var controls = new THREE.OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+controls.dampingFactor = 0.25;
+controls.enableZoom = true;
+//#endregion
+
+//#region lights
+
+var keyLight = new THREE.DirectionalLight(new THREE.Color('hsl(30, 100%, 75%)'), 1.0);
+keyLight.position.set(-100, 0, 100);
+
+var fillLight = new THREE.DirectionalLight(new THREE.Color('hsl(240, 100%, 75%)'), 0.75);
+fillLight.position.set(100, 0, 100);
+
+var backLight = new THREE.DirectionalLight(0xffffff, 1.0);
+backLight.position.set(100, 0, -100).normalize();
+
+scene.add(keyLight);
+scene.add(fillLight);
+scene.add(backLight);
+
+//#endregion
 
 
-//resize check
-window.addEventListener('resize', onResize)
+//#region Object
 
-function update() {
-    box.rotation.x += 0.05
-    box.rotation.y += 0.01
-    renderer.render(scene, camera)
-    window.requestAnimationFrame(update)
-}
+var mtlLoader = new THREE.MTLLoader();
+mtlLoader.setTexturePath('/models/');
+mtlLoader.setPath('/models/');
+mtlLoader.load('Tree.mtl', function (materials) {
 
+    materials.preload();
 
-function onResize() {
-    width = threejsCanvas.offsetWidth
-    height = threejsCanvas.offsetHeight
+    var objLoader = new THREE.OBJLoader();
+    objLoader.setMaterials(materials);
+    objLoader.setPath('/models/');
+    objLoader.load('Tree.obj', function (object) {
+        object.scale.set(10,10,10);
+        scene.add(object);
+        object.position.y -= 60;
 
-    renderer.setSize(width, height)
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+    });
 
-    camera.aspect = width / height
-    camera.updateProjectionMatrix()
-}
+});
+
+//#endregion
+
+//#region Setup
+var animate = function () {
+	requestAnimationFrame( animate );
+	controls.update();
+	renderer.render(scene, camera);
+};
+//#endregion
+
+animate();
