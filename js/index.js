@@ -14,8 +14,33 @@ camera.position.z = 209.76686235092527;
 
 //#endregion
 
+//#region Loader
+const loadingManager = new THREE.LoadingManager();
+
+loadingManager.onStart = function(url, item, total){
+    console.log(`Started loading: ${url}`);
+}
+
+loadingManager.onProgress = function(url, loaded, total){
+    console.log(`Loading: ${url}`);
+}
+
+loadingManager.onLoad = function(){
+    console.log(`Finish loading`);
+}
+
+loadingManager.onError = function(url){
+    console.log(`Error loading:  ${url}`);
+}
+
+//#endregion 
+
 //#region Canvas
-var renderer = new THREE.WebGLRenderer();
+var renderer = new THREE.WebGLRenderer({
+    antialias : true,
+    alpha: true
+});
+scene.background = new THREE.Color( 0x000000 );
 renderer.setSize( window.innerWidth, window.innerHeight );
 document.body.appendChild( renderer.domElement );
 //#endregion
@@ -44,27 +69,60 @@ scene.add(backLight);
 
 //#endregion
 
-
-//#region Object
-
-var mtlLoader = new THREE.MTLLoader();
+//#region Loaders
+var mtlLoader = new THREE.MTLLoader(loadingManager);
 mtlLoader.setTexturePath('/models/');
 mtlLoader.setPath('/models/');
-mtlLoader.load('Tree.mtl', function (materials) {
+var objLoader = new THREE.OBJLoader();
 
-    materials.preload();
+objLoader.setPath('/models/');
+//#endregion
+
+//#region Object
+//
+
+//mtlLoader.load('Tree.mtl', function (materials) {
+//
+//    materials.preload();
+//
+//    var objLoader = new THREE.OBJLoader();
+//    objLoader.setMaterials(materials);
+//    objLoader.setPath('/models/');
+//    objLoader.load('Tree.obj', function (object) {
+//        object.scale.set(10,10,10);
+//        scene.add(object);
+//        object.position.y -= 60;
+//
+//    });
+//
+//});
+//
+//#endregion
+
+
+//#region Coffe
+let coffe;
 
     var objLoader = new THREE.OBJLoader();
-    objLoader.setMaterials(materials);
     objLoader.setPath('/models/');
-    objLoader.load('Tree.obj', function (object) {
-        object.scale.set(10,10,10);
+    objLoader.load('Coffe.obj', function (object) {
+        object.traverse( function (obj) {
+            if (obj.isMesh){
+              obj.material.color.set(0x00ffff);
+              obj.material.wireframe = true;
+              obj.material.opacity = 0.7;
+              obj.material.transparent = true;
+              obj.material.emissive.set(0x00ffff);
+              console.log(obj.material);
+            }
+          } );
+
+        object.scale.set(100,100,100);
         scene.add(object);
         object.position.y -= 60;
+        coffe = object;
 
     });
-
-});
 
 //#endregion
 
@@ -73,6 +131,10 @@ var animate = function () {
 	requestAnimationFrame( animate );
 	controls.update();
 	renderer.render(scene, camera);
+    if (coffe != undefined) {
+        coffe.rotation.y += 0.003;
+    }
+
 };
 //#endregion
 
