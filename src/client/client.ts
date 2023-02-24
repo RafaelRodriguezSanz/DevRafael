@@ -1,3 +1,10 @@
+import * as THREE from "three";
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
+import { MTLLoader } from 'three/examples/jsm/loaders/MTLLoader'
+import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader'
+import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader'
+
+
 
 //#region scene
 
@@ -46,7 +53,7 @@ document.body.appendChild( renderer.domElement );
 //#endregion
 
 //#region Controls
-var controls = new THREE.OrbitControls(camera, renderer.domElement);
+var controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
 controls.dampingFactor = 0.25;
 controls.enableZoom = true;
@@ -70,12 +77,10 @@ scene.add(backLight);
 //#endregion
 
 //#region Loaders
-var mtlLoader = new THREE.MTLLoader(loadingManager);
-mtlLoader.setTexturePath('/models/');
-mtlLoader.setPath('/models/');
-var objLoader = new THREE.OBJLoader();
-
-objLoader.setPath('/models/');
+var mtlLoader = new MTLLoader(loadingManager);
+mtlLoader.setPath('models/');
+var objLoader = new OBJLoader();
+objLoader.setPath('models/');
 //#endregion
 
 //#region Object
@@ -101,28 +106,25 @@ objLoader.setPath('/models/');
 
 
 //#region Coffe
-let coffe;
+let coffe: THREE.Mesh;
+objLoader.load('Coffe.obj', function (object: any) {
+    object.traverse( function (obj: any) {
+        if (obj.isMesh){
+            obj.material.color.set(0x00ffff);
+            obj.material.wireframe = true;
+            obj.material.opacity = 0.7;
+            obj.material.transparent = true;
+            obj.material.emissive.set(0x00ffff);
+            console.log(obj.material);
+        }
+        } );
 
-    var objLoader = new THREE.OBJLoader();
-    objLoader.setPath('/models/');
-    objLoader.load('Coffe.obj', function (object) {
-        object.traverse( function (obj) {
-            if (obj.isMesh){
-              obj.material.color.set(0x00ffff);
-              obj.material.wireframe = true;
-              obj.material.opacity = 0.7;
-              obj.material.transparent = true;
-              obj.material.emissive.set(0x00ffff);
-              console.log(obj.material);
-            }
-          } );
+    object.scale.set(100,100,100);
+    scene.add(object);
+    object.position.y -= 60;
+    coffe = object;
 
-        object.scale.set(100,100,100);
-        scene.add(object);
-        object.position.y -= 60;
-        coffe = object;
-
-    });
+});
 
 //#endregion
 
