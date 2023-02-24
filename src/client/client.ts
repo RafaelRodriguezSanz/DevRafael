@@ -3,7 +3,10 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import { MTLLoader } from 'three/examples/jsm/loaders/MTLLoader'
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader'
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader'
-
+import { TGALoader } from 'three/examples/jsm/loaders/TGALoader.js';
+import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
+import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
+import {UnrealBloomPass} from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
 
 
 //#region scene
@@ -13,7 +16,7 @@ var scene = new THREE.Scene();
 //#endregion 
 
 //#region camera
-var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
+var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 100000 );
 
 camera.position.x = 142.75045088038718;
 camera.position.y = 131.92094293881487;
@@ -81,6 +84,8 @@ var mtlLoader = new MTLLoader(loadingManager);
 mtlLoader.setPath('models/');
 var objLoader = new OBJLoader();
 objLoader.setPath('models/');
+var fbxLoader = new FBXLoader();
+fbxLoader.setPath('models/');
 //#endregion
 
 //#region Object
@@ -128,11 +133,50 @@ objLoader.load('Coffe.obj', function (object: any) {
 
 //#endregion
 
+
+//#region Load FBX from Unreal
+// let cave: THREE.Mesh;
+// fbxLoader.load('Cave.fbx', function (object: any) {
+//     object.scale.set(100,100,100);
+//     object.traverse( function (obj: any) {
+//         if (obj.isMesh){
+//             obj.material.color.set(0x00ffff);
+//             obj.material.wireframe = true;
+//             obj.material.opacity = 0.7;
+//             obj.material.transparent = true;
+//             obj.material.emissive.set(0x00ffff);
+//             console.log(obj.material);
+//         }
+//         } );
+
+//     scene.add(object);
+//     object.position.y -= 60;
+//     cave = object;
+// 
+// });
+//#endregion
+
+
+//#region PostProcessing
+const renderScene = new RenderPass(scene, camera);
+const composer = new EffectComposer(renderer);
+composer.addPass(renderScene);
+
+const bloomPass = new UnrealBloomPass(
+    new THREE.Vector2(window.innerWidth, window.innerHeight),
+    0.3,
+    0.1,
+    0.1
+);
+composer.addPass(bloomPass);
+//#endregion
+
 //#region Setup
 var animate = function () {
 	requestAnimationFrame( animate );
 	controls.update();
-	renderer.render(scene, camera);
+    composer.render();
+    //Coffe animation
     if (coffe != undefined) {
         coffe.rotation.y += 0.003;
     }
