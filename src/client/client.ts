@@ -13,11 +13,9 @@ import studio from '@theatre/studio'
 
 //#region Studio
 let sheet: any;
-if (process.env.NODE_ENV === 'development') {
-    studio.initialize();
-    const proj = core.getProject("Main");
-    sheet = proj.sheet("Scene");
-}
+studio.initialize();
+const proj = core.getProject("Main");
+sheet = proj.sheet("Scene");
 //#endregion
 
 //#region scene
@@ -142,21 +140,19 @@ objLoader.load('Coffe.obj', function (object: any) {
     coffe = object;
 
     //#region STUDIO
-    if (process.env.NODE_ENV === 'development') {
-        const coffeStudio = sheet.object("Coffe", {
-            position: {x: 0 , y: -60, z: 0 },
-            rotation: {x: 0 , y: -60, z: 0 }
-        });
-        coffeStudio.onValuesChange((v: any) => {
-            coffe.rotation.x = (v.rotation.x);
-            coffe.rotation.y = (v.rotation.y);
-            coffe.rotation.z = (v.rotation.z);
-            
-            coffe.position.x = (v.position.x);
-            coffe.position.y = (v.position.y);
-            coffe.position.z = (v.position.z);
-        });
-    }
+    const coffeStudio = sheet.object("Coffe", {
+        position: {x: 0 , y: -60, z: 0 },
+        rotation: {x: 0 , y: -60, z: 0 }
+    });
+    coffeStudio.onValuesChange((v: any) => {
+        coffe.rotation.x = (v.rotation.x);
+        coffe.rotation.y = (v.rotation.y);
+        coffe.rotation.z = (v.rotation.z);
+        
+        coffe.position.x = (v.position.x);
+        coffe.position.y = (v.position.y);
+        coffe.position.z = (v.position.z);
+    });
     //#endregion
 
 });
