@@ -1,6 +1,7 @@
 const path = require('path')
 
 module.exports = {
+    mode: 'production',
     entry: './src/client/client.ts',
     module: {
         rules: [

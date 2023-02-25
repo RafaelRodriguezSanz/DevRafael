@@ -1,16 +1,21 @@
 {
-    "name": "three.js-typescript-tutorial",
+    "name": "DevRafael",
     "version": "1.0.0",
     "description": "",
     "scripts": {
         "dev": "webpack serve --config ./src/client/webpack.dev.js",
-        "test": "echo \"Error: no test specified\" && exit 1"
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "build": "webpack --config ./src/client/webpack.common.js",
+        "predeploy": "npm run build",
+        "deploy": "gh-pages -d dist/client",
+        "publish": "npm run build && npm run predeploy && npm run deploy"
     },
-    "author": "",
+    "author": "Rafael Rodriguez",
     "license": "ISC",
     "dependencies": {
         "@theatre/core": "^0.6.0",
         "@theatre/r3f": "^0.6.0",
+        "gh-pages": "^5.0.0",
         "react": "^18.2.0"
     },
     "devDependencies": {
