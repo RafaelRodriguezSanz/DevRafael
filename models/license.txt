@@ -1,0 +1,11 @@
+Model Information:
+* title:	Vintage Pocket Watch
+* source:	https://sketchfab.com/3d-models/vintage-pocket-watch-8f03299aecdd4382a04783c472139254
+* author:	Dodocaedro (https://sketchfab.com/Dodocaedro)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Vintage Pocket Watch" (https://sketchfab.com/3d-models/vintage-pocket-watch-8f03299aecdd4382a04783c472139254) by Dodocaedro (https://sketchfab.com/Dodocaedro) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
